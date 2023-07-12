@@ -8,6 +8,8 @@ use crate::{colors::map_to_gradient, common::mandelbrot};
 
 #[allow(clippy::cast_possible_wrap, clippy::cast_possible_truncation)]
 pub fn compute(width: u32, height: u32) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+  // rayon::ThreadPoolBuilder::new().num_threads(12).build_global().unwrap();
+
   let mut arr = vec![vec![0; height as usize]; width as usize].into_boxed_slice();
 
   let tmp_x = 3.3 / f64::from(width);
