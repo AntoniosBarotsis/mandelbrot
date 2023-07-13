@@ -28,7 +28,7 @@ fn main() {
   // img.save("out.png").unwrap();
 
   // create_frames(width, height, 510);
-  create_frames_2(width, height, 10);
+  create_frames_2(width, height, 60);
 }
 
 // fn create_frames(width: u32, height: u32, n: u32) {
@@ -68,19 +68,21 @@ fn main() {
 
 fn create_frames_2(width: u32, height: u32, n: u32) {
   let pb = ProgressBar::new(n as u64);
-  let mut scale_off = 1.0;
+  let scale_off = f64::exp(f64::ln(50000.0/1.0) / (f64::from(n)- 1.0));
+  dbg!(scale_off);
+  let mut scale = 1.0;
 
   for i in 0..n {
-    let scale = scale_off;
     // let point = (400.0, 000.0);
     // let point = (-600.0, - 100.0);
 
 
-    let img = parallel::compute(width, height, scale);
+    let img = parallel::compute(width, height, scale, (1.0, 0.0));
     
     img.save(format!("data/img{i:0>3}.png")).unwrap();
     pb.inc(1);
-    scale_off /= 2.0;
+    dbg!(scale);
+    scale *= scale_off;
 
     // if i < 120 {
     //   scale_off += 0.005;
