@@ -1,7 +1,6 @@
 #![allow(unsafe_code, unused)]
 
 use image::{ImageBuffer, Rgb};
-use indicatif::ProgressBar;
 use rayon::prelude::{ParallelIterator, IntoParallelRefMutIterator, IndexedParallelIterator};
 
 use crate::{colors::map_to_gradient, common::mandelbrot};
@@ -11,8 +10,6 @@ pub fn compute(width: u32, height: u32, scale: f64, point: (f64, f64)) -> ImageB
   // rayon::ThreadPoolBuilder::new().num_threads(12).build_global().unwrap();
 
   let mut arr = vec![vec![0; height as usize]; width as usize].into_boxed_slice();
-
-  let pb = ProgressBar::new(u64::from(width));
 
   arr.par_iter_mut().enumerate().for_each(|(x, slice)| {
     for y in 0..height {
@@ -25,7 +22,6 @@ pub fn compute(width: u32, height: u32, scale: f64, point: (f64, f64)) -> ImageB
         *slice.get_unchecked_mut(y as usize) = depth;
       }
     }
-    pb.inc(1);
   });
 
   ImageBuffer::from_fn(width, height, |x, y| {

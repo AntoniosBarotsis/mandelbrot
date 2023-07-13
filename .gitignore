@@ -12,3 +12,4 @@ target/
 *.pdb
 
 out.png
+data/*
