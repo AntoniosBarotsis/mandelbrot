@@ -14,6 +14,13 @@ can then be stitched together with [FFmpeg](https://ffmpeg.org/) with something 
 ffmpeg -framerate 30 -i 'data/img%03d.png' -pix_fmt yuv420p output.mp4
 ```
 
+> **Note** If you're on Windows, you can install FFmpeg via
+> [Chocolatey](https://community.chocolatey.org/) with
+>
+> ```sh
+> choco install ffmpeg -y
+> ```
+
 ## Configurations
 
 Currently, there's no "nice" way for users to do any sort of configuration without editing the code
@@ -29,4 +36,16 @@ There's a few things you might want to edit:
 | `COLORS` | `colors.rs` | The color pallete. This should be 11 elements, if you want to use more, you probably need to make sure the `depth` works and is handled correctly. |
 | `MAX_DEPTH` | `common.rs` | The maximum depth used in the Mandelbrot calculations. I have not played with this at all 👍 |
 
+## Limitations
 
+Towards the ends of both videos in the [assets](./assets/) folder, you can see what I presume to be
+the limitations of 64-bit floating number accuracy. Ways to go past that include using
+[128-bit floats](https://crates.io/crates/f128) or 
+[multiple-precision floating-point numbers](https://crates.io/crates/gmp-mpfr-sys). Neither of these
+natively support Windows which is why I chose to not go any further.
+
+## Stuff that Helped me
+
+- [Render the Julia set in 3 dozen lines of Rust code](https://www.youtube.com/watch?v=g4vN2Z0JuZI)
+- [Online Mandelbrot Set Plotter](https://sciencedemos.org.uk/mandelbrot.php)
+- [Brute Force Processing](https://youtu.be/PBvLs88hvJ8)
