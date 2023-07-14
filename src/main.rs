@@ -5,19 +5,22 @@ mod implementations;
 mod common;
 
 use std::fmt::format;
+use astro_float::{BigFloat, RoundingMode};
 use indicatif::ProgressBar;
 
 use image::{GenericImage, GenericImageView};
 use implementations::{simple, parallel};
+
+use crate::common::zoom;
 
 fn main() {
   // let width = 100_000;
   // let width = 50_000;
   // let width = 10_000;
   // let width = 3840;
-  // let width = 1920;
+  let width = 1920;
   // let width = 720;
-  let width = 480;
+  // let width = 480;
 
   let height = 9 * width / 16;
 
@@ -28,7 +31,7 @@ fn main() {
   // img.save("out.png").unwrap();
 
   // create_frames(width, height, 510);
-  create_frames_2(width, height, 60);
+  create_frames_2(width, height, 5 * 60);
 }
 
 // fn create_frames(width: u32, height: u32, n: u32) {
@@ -66,23 +69,41 @@ fn main() {
 //   }
 // }
 
+// TODO: Maybe the scale should also be a big float
 fn create_frames_2(width: u32, height: u32, n: u32) {
   let pb = ProgressBar::new(n as u64);
-  let scale_off = f64::exp(f64::ln(50000.0/1.0) / (f64::from(n)- 1.0));
-  dbg!(scale_off);
+  // let scale_off = f64::exp(f64::ln((f64::MAX-1.0)/1.0) / (f64::from(n)- 1.0));
+  // dbg!(scale_off);
+
   let mut scale = 1.0;
+  // (0.365,0.385,0.265,0.285);
+  let mut area = (-4.78,1.22, -3.0,3.0);
+
+
+  // let p = 128;
+  // let rm = RoundingMode::None;
+  // // let mut scale = BigFloat::from_f64(1.0, p);
+  // let mut scale = BigFloat::from_f64(50_000.0, p);
+  // let scale_off = BigFloat::from_f64(scale_off, p);
+
 
   for i in 0..n {
     // let point = (400.0, 000.0);
     // let point = (-600.0, - 100.0);
 
 
-    let img = parallel::compute(width, height, scale, (1.0, 0.0));
+    // let area = (0.365,0.385,0.265,0.285);
+    let img = parallel::compute(width, height, scale, (0.0, 0.0), area);
+    // let img = parallel::compute_big(width, height, &scale, (1.0, 0.0));
     
     img.save(format!("data/img{i:0>3}.png")).unwrap();
     pb.inc(1);
-    dbg!(scale);
+
+    // dbg!(scale);
+    let scale_off = (area.1 - area.0).abs() / 16.0;
+    area = zoom(area, scale_off);
     scale *= scale_off;
+    // scale = scale.mul(&scale_off, p, rm);
 
     // if i < 120 {
     //   scale_off += 0.005;
