@@ -44,6 +44,10 @@ the limitations of 64-bit floating number accuracy. Ways to go past that include
 [multiple-precision floating-point numbers](https://crates.io/crates/gmp-mpfr-sys). Neither of these
 natively support Windows which is why I chose to not go any further.
 
+There's also [`astro-float`](https://crates.io/crates/astro-float) which is written in native Rust
+but do keep in mind that it is much slower than using standard floats (as is likely the case with
+the 2 other alternatives I mentioned previously, I've just happened to have only used this one).
+
 ## Stuff that Helped me
 
 - [Render the Julia set in 3 dozen lines of Rust code](https://www.youtube.com/watch?v=g4vN2Z0JuZI)
