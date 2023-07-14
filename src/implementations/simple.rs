@@ -1,22 +1,37 @@
-#![allow(unused)]
+#![allow(dead_code, unsafe_code)]
 
 use image::{ImageBuffer, Rgb};
 
 use crate::{colors::map_to_gradient, common::mandelbrot};
 
-pub fn compute(width: u32, height: u32) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
-  let mut img: ImageBuffer<Rgb<u8>, Vec<u8>> = ImageBuffer::<Rgb<u8>, _>::new(width, height);
-  let tmp_x = 3.3 / f64::from(width);
-  let tmp_y = 2.8 / f64::from(height);
+use super::map;
 
-  for (x, y, pixel) in img.enumerate_pixels_mut() {
-    let x = f64::from(x).mul_add(tmp_x, -2.15);
-    let y = f64::from(y).mul_add(tmp_y, -1.4);
+#[allow(clippy::cast_possible_wrap, clippy::cast_possible_truncation)]
+pub fn compute(
+  width: u32,
+  height: u32,
+  area: (f64, f64, f64, f64),
+) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+  let mut arr = vec![vec![0; height as usize]; width as usize].into_boxed_slice();
 
-    let c = mandelbrot(x, y);
+  arr.iter_mut().enumerate().for_each(|(x, slice)| {
+    for y in 0..height {
+      // -2,2 -> -2,0
+      let x_tmp = f64::from(x as i32) / f64::from(width);
+      let y_tmp = f64::from(y as i32) / f64::from(height);
 
-    *pixel = map_to_gradient(c);
-  }
+      let x_scaled = map(x_tmp, 1.0, 0.0, area.1, area.0);
+      let y_scaled = map(y_tmp, 1.0, 0.0, area.3, area.2);
 
-  img
+      let depth = mandelbrot(x_scaled, y_scaled);
+
+      unsafe {
+        *slice.get_unchecked_mut(y as usize) = depth;
+      }
+    }
+  });
+
+  ImageBuffer::from_fn(width, height, |x, y| {
+    map_to_gradient(arr[x as usize][y as usize])
+  })
 }
