@@ -1,10 +1,13 @@
+#![cfg_attr(
+  feature = "simd",
+  feature(portable_simd, iter_array_chunks, split_array)
+)]
+
 mod colors;
 mod common;
 mod implementations;
 
 use indicatif::ProgressBar;
-
-use implementations::parallel;
 
 use crate::common::zoom;
 
@@ -14,8 +17,8 @@ fn main() {
 
   let height = 9 * width / 16;
 
-  // create_frames(width, height, 30);
-  create_frames(width, height, 7 * 60);
+  create_frames(width, height, 30);
+  // create_frames(width, height, 7 * 60);
 }
 
 // TODO: Maybe the scale should also be a big float
@@ -27,7 +30,10 @@ fn create_frames(width: u32, height: u32, n: u32) {
   let mut area = (point.0 - 2.0, point.0 + 2.0, point.1 - 2.0, point.1 + 2.0);
 
   for i in 0..n {
-    let img = parallel::compute(width, height, area);
+    #[cfg(not(feature = "simd"))]
+    let img = implementations::parallel::compute(width, height, area);
+    #[cfg(feature = "simd")]
+    let img = implementations::simd::compute_parallel(width, height, area);
 
     img
       .save(format!("data/img{i:0>3}.png"))
