@@ -390,7 +390,6 @@ dependencies = [
  "image",
  "indicatif",
  "nalgebra",
- "num-traits",
  "rayon",
 ]
 
