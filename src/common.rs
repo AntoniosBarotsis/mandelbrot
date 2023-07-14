@@ -2,7 +2,7 @@
 
 use nalgebra::Complex;
 
-const MAX_DEPTH: i32 = 1000;
+pub const MAX_DEPTH: i32 = 1000;
 
 pub fn mandelbrot(x: f64, y: f64) -> i32 {
   let mut depth = 0;

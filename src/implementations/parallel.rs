@@ -1,9 +1,11 @@
-#![allow(unsafe_code)]
+#![allow(dead_code, unsafe_code)]
 
 use image::{ImageBuffer, Rgb};
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 use crate::{colors::map_to_gradient, common::mandelbrot};
+
+use super::map;
 
 #[allow(clippy::cast_possible_wrap, clippy::cast_possible_truncation)]
 pub fn compute(
@@ -33,8 +35,4 @@ pub fn compute(
   ImageBuffer::from_fn(width, height, |x, y| {
     map_to_gradient(arr[x as usize][y as usize])
   })
-}
-
-fn map(point: f64, old_top: f64, old_bottom: f64, new_top: f64, new_bottom: f64) -> f64 {
-  ((point - old_bottom) / (old_top - old_bottom)).mul_add(new_top - new_bottom, new_bottom)
 }
