@@ -1,6 +1,5 @@
 #![allow(clippy::similar_names)]
 
-// use astro_float::{BigFloat, RoundingMode};
 use nalgebra::Complex;
 
 const MAX_DEPTH: i32 = 1000;
@@ -22,39 +21,6 @@ pub fn mandelbrot(x: f64, y: f64) -> i32 {
 
   depth
 }
-
-// pub fn mandelbrot_big(x: BigFloat, y: BigFloat) -> i32 {
-//   let mut depth = 0;
-//   let p = 128;
-//   let rm: RoundingMode = RoundingMode::None;
-
-//   let cr = x;
-//   let ci = y;
-//   let mut zr = BigFloat::from_word(0, p);
-//   let mut zi = BigFloat::from_word(0, p);
-
-//   while depth < MAX_DEPTH {
-//     let zr_squared = zr.powi(2, p, rm);
-//     let zi_squared = zi.powi(2, p, rm);
-
-//     let zr_tmp = zr_squared.sub(&zi_squared, p, rm).add(&cr, p, rm);
-//     let zi_tmp = (zr.mul(&zi, p, rm).mul(&BigFloat::from_word(2, p), p, rm)).add(&ci, p, rm);
-//     zr = zr_tmp;
-//     zi = zi_tmp;
-
-//     let zr_squared = zr.powi(2, p, rm);
-//     let zi_squared = zi.powi(2, p, rm);
-//     let square = zr_squared.add(&zi_squared, p, rm);
-
-//     if square > BigFloat::from_word(4, p) {
-//       break;
-//     }
-
-//     depth += 1;
-//   }
-
-//   depth
-// }
 
 pub fn zoom(area: (f64, f64, f64, f64), amt: f64) -> (f64, f64, f64, f64) {
   (area.0 + amt, area.1 - amt, area.2 + amt, area.3 - amt)
