@@ -31,7 +31,8 @@ fn main() {
   // img.save("out.png").unwrap();
 
   // create_frames(width, height, 510);
-  create_frames_2(width, height, 5 * 60);
+  // create_frames_2(width, height, 30);
+  create_frames_2(width, height, 7 * 60);
 }
 
 // fn create_frames(width: u32, height: u32, n: u32) {
@@ -72,12 +73,11 @@ fn main() {
 // TODO: Maybe the scale should also be a big float
 fn create_frames_2(width: u32, height: u32, n: u32) {
   let pb = ProgressBar::new(n as u64);
-  // let scale_off = f64::exp(f64::ln((f64::MAX-1.0)/1.0) / (f64::from(n)- 1.0));
-  // dbg!(scale_off);
 
   let mut scale = 1.0;
-  // (0.365,0.385,0.265,0.285);
-  let mut area = (-4.78,1.22, -3.0,3.0);
+  // -4.78,1.22, -3.0,3.0
+  let point = ( 	-0.669611276569,  	-0.458152008518);
+  let mut area = (point.0 - 2.0, point.0 + 2.0, point.1 - 2.0, point.1 + 2.0);
 
 
   // let p = 128;
@@ -100,9 +100,10 @@ fn create_frames_2(width: u32, height: u32, n: u32) {
     pb.inc(1);
 
     // dbg!(scale);
-    let scale_off = (area.1 - area.0).abs() / 16.0;
+    // let scale_off = 0.1;
+    let scale_off = (area.1 - area.0).abs() / 64.0;
     area = zoom(area, scale_off);
-    scale *= scale_off;
+    // scale *= scale_off;
     // scale = scale.mul(&scale_off, p, rm);
 
     // if i < 120 {
