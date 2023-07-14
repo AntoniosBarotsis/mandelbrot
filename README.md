@@ -1,8 +1,14 @@
+
+https://github.com/AntoniosBarotsis/mandelbrot/assets/50240570/cebd3c0a-cb91-44eb-bc61-3e920aa46fdf
 # Mandelbrot-rs
 
 A Mandelbrot set renderer (with zoom!) I implemented for fun in Rust.
 
-![](./assets/output2.mp4)
+
+https://github.com/AntoniosBarotsis/mandelbrot/assets/50240570/8ab83659-81d9-47b7-bb88-d804ae88e872
+
+
+![example]([./assets/output2.mp4](https://github.com/AntoniosBarotsis/mandelbrot/assets/50240570/8ab83659-81d9-47b7-bb88-d804ae88e872))
 
 ## Usage
 
