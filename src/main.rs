@@ -1,6 +1,7 @@
+#![allow(unstable_features)]
 #![cfg_attr(
   feature = "simd",
-  feature(portable_simd, iter_array_chunks, split_array)
+  feature(portable_simd, iter_array_chunks, split_array, get_many_mut)
 )]
 
 mod colors;
@@ -12,6 +13,8 @@ use indicatif::ProgressBar;
 use crate::common::zoom;
 
 fn main() {
+  // rayon::ThreadPoolBuilder::new().num_threads(2).build_global().unwrap();
+
   let width = 1920;
   // let width = 480;
 
@@ -21,7 +24,7 @@ fn main() {
   // create_frames(width, height, 7 * 60);
 }
 
-// TODO: Maybe the scale should also be a big float
+// TODO: Generify the SIMD functions
 fn create_frames(width: u32, height: u32, n: u32) {
   #[allow(clippy::cast_lossless)]
   let pb = ProgressBar::new(n as u64);
@@ -33,7 +36,7 @@ fn create_frames(width: u32, height: u32, n: u32) {
     #[cfg(not(feature = "simd"))]
     let img = implementations::parallel::compute(width, height, area);
     #[cfg(feature = "simd")]
-    let img = implementations::simd::compute_parallel(width, height, area);
+    let img = implementations::simd::compute_parallel_f64x8(width, height, area);
 
     img
       .save(format!("data/img{i:0>3}.png"))
