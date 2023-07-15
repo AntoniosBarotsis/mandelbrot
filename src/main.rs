@@ -1,7 +1,7 @@
 #![allow(unstable_features)]
 #![cfg_attr(
   feature = "simd",
-  feature(portable_simd, iter_array_chunks, split_array, get_many_mut)
+  feature(portable_simd, iter_array_chunks, get_many_mut)
 )]
 
 mod colors;
@@ -24,7 +24,6 @@ fn main() {
   // create_frames(width, height, 7 * 60);
 }
 
-// TODO: Generify the SIMD functions
 fn create_frames(width: u32, height: u32, n: u32) {
   #[allow(clippy::cast_lossless)]
   let pb = ProgressBar::new(n as u64);

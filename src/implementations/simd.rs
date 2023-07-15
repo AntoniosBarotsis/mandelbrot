@@ -1,8 +1,14 @@
-#![allow(dead_code, unsafe_code)]
+#![allow(
+  dead_code,
+  unsafe_code,
+  clippy::similar_names,
+  clippy::cast_possible_truncation,
+  clippy::cast_possible_wrap
+)]
 
 use crate::{colors::map_to_gradient, common::MAX_DEPTH};
 use image::{ImageBuffer, Rgb};
-use packed_simd::{f64x2, f64x8, i32x2, i32x8, Simd};
+use packed_simd::{f64x2, f64x8, Simd, SimdArray};
 use rayon::prelude::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 #[allow(clippy::cast_possible_wrap, clippy::cast_possible_truncation)]
@@ -25,10 +31,10 @@ pub fn compute(
         f64::from(y as i32) / f64::from(height),
       );
 
-      let x_scaled = map_simd(xs_tmp, 1.0, 0.0, area.1, area.0);
-      let y_scaled = map_simd(ys_tmp, 1.0, 0.0, area.3, area.2);
+      let x_scaled = map_simd_f64x2(xs_tmp, 1.0, 0.0, area.1, area.0);
+      let y_scaled = map_simd_f64x2(ys_tmp, 1.0, 0.0, area.3, area.2);
 
-      let depth = mandelbrot_simd(x_scaled, y_scaled);
+      let depth = mandelbrot_simd_f64x2(x_scaled, y_scaled);
 
       unsafe {
         *slice1.get_unchecked_mut(y as usize) = depth.extract(0);
@@ -55,17 +61,16 @@ pub fn compute_parallel(
     };
 
     for y in 0..height {
-      // -2,2 -> -2,0
       let xs_tmp = f64x2::new(
         f64::from(*x1 as i32) / f64::from(width),
         f64::from(*x2 as i32) / f64::from(width),
       );
       let ys_tmp = f64x2::splat(f64::from(y as i32) / f64::from(height));
 
-      let x_scaled = map_simd(xs_tmp, 1.0, 0.0, area.1, area.0);
-      let y_scaled = map_simd(ys_tmp, 1.0, 0.0, area.3, area.2);
+      let x_scaled = map_simd_f64x2(xs_tmp, 1.0, 0.0, area.1, area.0);
+      let y_scaled = map_simd_f64x2(ys_tmp, 1.0, 0.0, area.3, area.2);
 
-      let depth = mandelbrot_simd(x_scaled, y_scaled);
+      let depth = mandelbrot_simd_f64x2(x_scaled, y_scaled);
 
       unsafe {
         *slice1.get_unchecked_mut(y as usize) = depth.extract(0);
@@ -137,86 +142,5 @@ pub fn compute_parallel_f64x8(
   })
 }
 
-fn map_simd(
-  point: Simd<[f64; 2]>,
-  old_top: f64,
-  old_bottom: f64,
-  new_top: f64,
-  new_bottom: f64,
-) -> Simd<[f64; 2]> {
-  let tmp_1 = f64x2::splat(new_top - new_bottom);
-  let tmp_2 = f64x2::splat(new_bottom);
-  ((point - old_bottom) / (old_top - old_bottom)).mul_add(tmp_1, tmp_2)
-}
-
-fn map_simd_f64x8(
-  point: Simd<[f64; 8]>,
-  old_top: f64,
-  old_bottom: f64,
-  new_top: f64,
-  new_bottom: f64,
-) -> Simd<[f64; 8]> {
-  let tmp_1 = f64x8::splat(new_top - new_bottom);
-  let tmp_2 = f64x8::splat(new_bottom);
-  ((point - old_bottom) / (old_top - old_bottom)).mul_add(tmp_1, tmp_2)
-}
-
-pub fn mandelbrot_simd(x: Simd<[f64; 2]>, y: Simd<[f64; 2]>) -> Simd<[i32; 2]> {
-  let mut depth = i32x2::new(0, 0);
-  let cr = x;
-  let ci = y;
-  let mut zr = f64x2::splat(0.0);
-  let mut zi = f64x2::splat(0.0);
-  let two = f64x2::splat(2.0);
-
-  for _ in 0..MAX_DEPTH {
-    let zr_tmp = zr.powf(two) - zi.powf(two) + cr;
-    let zi_tmp = zr * zi * two + ci;
-    zr = zr_tmp;
-    zi = zi_tmp;
-
-    let zr_squared = zr.powf(two);
-    let zi_squared = zi.powf(two);
-    let square = zr_squared + zi_squared;
-
-    let out = square.le(f64x2::splat(4.0));
-
-    if out.none() {
-      break;
-    }
-
-    depth += out.select(i32x2::splat(1), i32x2::splat(0));
-  }
-
-  depth
-}
-
-pub fn mandelbrot_simd_f64x8(x: Simd<[f64; 8]>, y: Simd<[f64; 8]>) -> Simd<[i32; 8]> {
-  let mut depth = i32x8::splat(0);
-  let cr = x;
-  let ci = y;
-  let mut zr = f64x8::splat(0.0);
-  let mut zi = f64x8::splat(0.0);
-  let two = f64x8::splat(2.0);
-
-  for _ in 0..MAX_DEPTH {
-    let zr_tmp = zr.powf(two) - zi.powf(two) + cr;
-    let zi_tmp = zr * zi * two + ci;
-    zr = zr_tmp;
-    zi = zi_tmp;
-
-    let zr_squared = zr.powf(two);
-    let zi_squared = zi.powf(two);
-    let square = zr_squared + zi_squared;
-
-    let out = square.le(f64x8::splat(4.0));
-
-    if out.none() {
-      break;
-    }
-
-    depth += out.select(i32x8::splat(1), i32x8::splat(0));
-  }
-
-  depth
-}
+crate::simd_boilerplate!(8);
+crate::simd_boilerplate!(2);
