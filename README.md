@@ -36,6 +36,51 @@ There's a few things you might want to edit:
 | `COLORS` | `colors.rs` | The color pallete. This should be 11 elements, if you want to use more, you probably need to make sure the `depth` works and is handled correctly. |
 | `MAX_DEPTH` | `common.rs` | The maximum depth used in the Mandelbrot calculations. I have not played with this at all 👍 |
 
+## SIMD
+
+My SIMD code relies on a bunch of features that have not landed in stable Rust yet and thus you need
+the Nightly toolchain to build those. They are put behind a `simd` feature so that you can still
+tinker with the rest of the project in stable Rust.
+
+```sh
+rustup default nightly
+# Might also need a `rustup update`
+cargo b -r -F simd
+```
+
+## Benchmarks
+
+I ran some simple benchmarks with [hyperfine](https://github.com/sharkdp/hyperfine) and got the
+following results:
+
+```
+1920x1080p - 30 frames
+
+Benchmark 1: Simple
+  Time (mean ± σ):     68.014 s ±  1.744 s    [User: 66.984 s, System: 0.239 s]
+  Range (min … max):   66.985 s … 71.085 s    5 runs
+  
+Benchmark 2: Parallel (2 threads)
+  Time (mean ± σ):     41.453 s ±  4.840 s    [User: 75.976 s, System: 0.227 s]
+  Range (min … max):   38.249 s … 49.833 s    5 runs
+
+Benchmark 3: SIMD
+  Time (mean ± σ):     39.394 s ±  0.522 s    [User: 38.457 s, System: 0.203 s]
+  Range (min … max):   38.724 s … 39.954 s    5 runs
+  
+Benchmark 4: Parallel
+  Time (mean ± σ):     20.054 s ±  1.140 s    [User: 123.051 s, System: 0.649 s]
+  Range (min … max):   18.492 s … 21.706 s    5 runs
+  
+Benchmark 5: SIMD + Parallel
+  Time (mean ± σ):     14.300 s ±  0.235 s    [User: 70.323 s, System: 0.490 s]
+  Range (min … max):   13.912 s … 14.477 s    5 runs
+  
+Benchmark 6: SIMD (f64x8) + Parallel
+  Time (mean ± σ):     10.257 s ±  1.228 s    [User: 54.645 s, System: 0.259 s]
+  Range (min … max):    8.062 s … 10.859 s    5 runs
+```
+
 ## Limitations
 
 Towards the ends of both videos in the [assets](./assets/) folder, you can see what I presume to be
