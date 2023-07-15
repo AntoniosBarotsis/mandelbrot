@@ -20,8 +20,8 @@ fn main() {
 
   let height = 9 * width / 16;
 
-  create_frames(width, height, 30);
-  // create_frames(width, height, 7 * 60);
+  // create_frames(width, height, 30);
+  create_frames(width, height, 7 * 60);
 }
 
 fn create_frames(width: u32, height: u32, n: u32) {
