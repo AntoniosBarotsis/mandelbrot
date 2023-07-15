@@ -3,7 +3,7 @@
 
 A Mandelbrot set renderer (with zoom!) I implemented for fun in Rust.
 
-[./assets/output2.mp4](https://github.com/AntoniosBarotsis/mandelbrot/assets/50240570/8ab83659-81d9-47b7-bb88-d804ae88e872)
+[./assets/output2.mp4](https://github.com/AntoniosBarotsis/mandelbrot/assets/50240570/2343d8e7-c5a1-43d5-97c4-01bccead4d1a)
 
 ## Usage
 
