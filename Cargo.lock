@@ -353,6 +353,7 @@ dependencies = [
  "indicatif",
  "nalgebra",
  "packed_simd",
+ "paste",
  "rayon",
 ]
 
