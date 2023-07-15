@@ -38,7 +38,8 @@ There's a few things you might want to edit:
 
 ## SIMD
 
-My SIMD code relies on a bunch of features that have not landed in stable Rust yet and thus you need
+My SIMD code relies on a bunch of features that have not landed in stable Rust yet (it didn't
+really need to use any of them but I just wanted to try some new stuff out) and thus you need
 the Nightly toolchain to build those. They are put behind a `simd` feature so that you can still
 tinker with the rest of the project in stable Rust.
 
