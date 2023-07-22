@@ -1,4 +1,4 @@
-#![allow(dead_code, unsafe_code)]
+#![allow(dead_code)]
 
 use image::{ImageBuffer, Rgb};
 
@@ -25,9 +25,7 @@ pub fn compute(
 
       let depth = mandelbrot(x_scaled, y_scaled);
 
-      unsafe {
-        *slice.get_unchecked_mut(y as usize) = depth;
-      }
+      slice[y as usize] = depth;
     }
   });
 

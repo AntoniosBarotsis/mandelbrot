@@ -36,10 +36,8 @@ pub fn compute(
 
       let depth = mandelbrot_simd_f64x2(x_scaled, y_scaled);
 
-      unsafe {
-        *slice1.get_unchecked_mut(y as usize) = depth.extract(0);
-        *slice2.get_unchecked_mut(y as usize) = depth.extract(1);
-      }
+      slice1[y as usize] = depth.extract(0);
+      slice2[y as usize] = depth.extract(1);
     }
   }
 
@@ -72,10 +70,8 @@ pub fn compute_parallel(
 
       let depth = mandelbrot_simd_f64x2(x_scaled, y_scaled);
 
-      unsafe {
-        *slice1.get_unchecked_mut(y as usize) = depth.extract(0);
-        *slice2.get_unchecked_mut(y as usize) = depth.extract(1);
-      }
+      slice1[y as usize] = depth.extract(0);
+      slice2[y as usize] = depth.extract(1);
     }
   });
 
@@ -124,16 +120,14 @@ pub fn compute_parallel_f64x8(
 
       let depth = mandelbrot_simd_f64x8(x_scaled, y_scaled);
 
-      unsafe {
-        *slice1.get_unchecked_mut(y as usize) = depth.extract(0);
-        *slice2.get_unchecked_mut(y as usize) = depth.extract(1);
-        *slice3.get_unchecked_mut(y as usize) = depth.extract(2);
-        *slice4.get_unchecked_mut(y as usize) = depth.extract(3);
-        *slice5.get_unchecked_mut(y as usize) = depth.extract(4);
-        *slice6.get_unchecked_mut(y as usize) = depth.extract(5);
-        *slice7.get_unchecked_mut(y as usize) = depth.extract(6);
-        *slice8.get_unchecked_mut(y as usize) = depth.extract(7);
-      }
+      slice1[y as usize] = depth.extract(0);
+      slice2[y as usize] = depth.extract(1);
+      slice3[y as usize] = depth.extract(2);
+      slice4[y as usize] = depth.extract(3);
+      slice5[y as usize] = depth.extract(4);
+      slice6[y as usize] = depth.extract(5);
+      slice7[y as usize] = depth.extract(6);
+      slice8[y as usize] = depth.extract(7);
     }
   });
 
