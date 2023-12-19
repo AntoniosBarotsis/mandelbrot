@@ -8,11 +8,10 @@ license = "GPL-3.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-simd = ["packed_simd"]
+simd = []
 default = []
 
 [dependencies]
-packed_simd = { version = "0.3.9", optional = true }
 image = "0.24.6"
 indicatif = "0.17.5"
 nalgebra = "0.32.3"
