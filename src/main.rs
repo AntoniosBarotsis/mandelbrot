@@ -8,6 +8,8 @@ mod colors;
 mod common;
 mod implementations;
 
+use std::{fs, path::Path};
+
 use indicatif::ProgressBar;
 
 use crate::common::zoom;
@@ -30,6 +32,10 @@ fn create_frames(width: u32, height: u32, n: u32) {
 
   let point = (-0.669_611_276_569, -0.458_152_008_518);
   let mut area = (point.0 - 2.0, point.0 + 2.0, point.1 - 2.0, point.1 + 2.0);
+
+  if !Path::new("./data").exists() {
+    fs::create_dir("./data").expect("Create data directory");
+  }
 
   for i in 0..n {
     #[cfg(not(feature = "simd"))]
